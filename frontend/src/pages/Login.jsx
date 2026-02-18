@@ -31,7 +31,7 @@ export default function Login() {
     else {
 
       // Demo admin login (for hackathon)
-      if (adminUser === "ishika" && adminPass === "ishika123") {
+      if (adminUser === "ishika" && adminPass === "onboard@2026") {
 
         localStorage.setItem("role", "admin");
         navigate("/admin");
