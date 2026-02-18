@@ -1,34 +1,22 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-const Login = () => {
-  const [role, setRole] = useState("student");
-  const [name, setName] = useState("");
-  const [admissionId, setAdmissionId] = useState("");
-
-  const handleLogin = async () => {
-    // Admin login (no DB required for hackathon)
-    if (role === "admin") {
-      window.location.href = "/admin";
-      return;
-    }
-
-    // Student login
-    const res = await axios.post(
-      "/login/",
-      {
-        name: name,
-        admission_id: admissionId,
-      }
-    );
-
-    localStorage.setItem(
-      "student",
-      JSON.stringify(res.data)
-    );
-
-    window.location.href = "/student";
+const handleLogin = () => {
+  const studentData = {
+    name,
+    admission_id: admissionId,
+    role
   };
+
+  localStorage.setItem("user", JSON.stringify(studentData));
+
+  if (role === "admin") {
+    window.location.href = "/admin";
+  } else {
+    window.location.href = "/student";
+  }
+};
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -90,6 +78,6 @@ const Login = () => {
 
     </div>
   );
-};
+
 
 export default Login;
