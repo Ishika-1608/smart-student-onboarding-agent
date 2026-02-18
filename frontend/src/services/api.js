@@ -15,3 +15,4 @@ export const getTasks = (admissionId) => {
 export const chatWithAgent = (data) => {
   return API.post("chat/", data);
 };
+export default API;

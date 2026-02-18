@@ -15,7 +15,7 @@ const Login = () => {
 
     // Student login
     const res = await axios.post(
-      "http://127.0.0.1:8000/api/login/",
+      "/login/",
       {
         name: name,
         admission_id: admissionId,
