@@ -1,83 +1,41 @@
-import { useEffect, useState } from "react";
-import API from "../services/api";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function AdminDashboard() {
-  const [stats, setStats] = useState(null);
+  const navigate = useNavigate();
 
-  // ---------- AUTH CHECK ----------
-  const storedUser = localStorage.getItem("user");
+  const user = JSON.parse(localStorage.getItem("user"));
 
-  if (!storedUser) {
-    window.location.href = "/";
-  }
-
-  const user = JSON.parse(storedUser);
-
-  if (user.role !== "admin") {
-    window.location.href = "/";
-  }
-
-  // ---------- FETCH DATA ----------
   useEffect(() => {
-    fetchStats();
+    if (!user || user.role !== "admin") {
+      navigate("/");
+    }
   }, []);
 
-  const fetchStats = async () => {
-    try {
-      const res = await API.get("/admin-stats/");
-      setStats(res.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  // ---------- LOGOUT ----------
-  const handleLogout = () => {
+  const logout = () => {
     localStorage.removeItem("user");
-    window.location.href = "/";
+    navigate("/");
   };
-
-  if (!stats) return <div>Loading...</div>;
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      {/* Header */}
-      <div className="flex justify-between mb-6">
-        <h1 className="text-2xl font-bold">
-          Admin Dashboard
-        </h1>
+    <div className="p-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Admin Dashboard</h1>
+
         <button
-          onClick={handleLogout}
-          className="bg-red-500 text-white px-4 py-1 rounded"
+          onClick={logout}
+          className="bg-red-500 text-white px-4 py-2 rounded"
         >
           Logout
         </button>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-3 gap-6">
-        <div className="bg-white p-4 rounded shadow">
-          <h2 className="text-gray-500">Total Students</h2>
-          <p className="text-2xl font-bold">
-            {stats.total_students}
-          </p>
-        </div>
+      <div className="mt-6 bg-white p-4 shadow rounded">
+        <h2 className="font-semibold mb-3">Admin Overview</h2>
 
-        <div className="bg-white p-4 rounded shadow">
-          <h2 className="text-gray-500">
-            Completed Onboarding
-          </h2>
-          <p className="text-2xl font-bold">
-            {stats.completed}
-          </p>
-        </div>
-
-        <div className="bg-white p-4 rounded shadow">
-          <h2 className="text-gray-500">Pending</h2>
-          <p className="text-2xl font-bold">
-            {stats.pending}
-          </p>
-        </div>
+        <p>👨‍🎓 Total Students: 24</p>
+        <p>✅ Completed Onboarding: 10</p>
+        <p>⏳ Pending Tasks: 14</p>
       </div>
     </div>
   );
