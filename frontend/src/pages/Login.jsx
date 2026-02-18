@@ -1,90 +1,122 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
+  const navigate = useNavigate();
+
+  const [role, setRole] = useState("student");
   const [name, setName] = useState("");
   const [admissionId, setAdmissionId] = useState("");
-  const [role, setRole] = useState("student");
+  const [adminUser, setAdminUser] = useState("");
+  const [adminPass, setAdminPass] = useState("");
 
   const handleLogin = () => {
-    if (!name || !admissionId) {
-      alert("Please enter all details");
-      return;
+
+    // ---------- STUDENT LOGIN ----------
+    if (role === "student") {
+
+      if (!name || !admissionId) {
+        alert("Enter details");
+        return;
+      }
+
+      localStorage.setItem("role", "student");
+      localStorage.setItem("studentId", admissionId);
+      localStorage.setItem("studentName", name);
+
+      navigate("/student");
     }
 
-    // Store user locally
-    const userData = {
-      name: name,
-      admission_id: admissionId,
-      role: role,
-    };
+    // ---------- ADMIN LOGIN ----------
+    else {
 
-    localStorage.setItem("user", JSON.stringify(userData));
+      // Demo admin login (for hackathon)
+      if (adminUser === "admin" && adminPass === "admin123") {
 
-    // Redirect based on role
-    if (role === "admin") {
-      window.location.href = "/admin";
-    } else {
-      window.location.href = "/student";
+        localStorage.setItem("role", "admin");
+        navigate("/admin");
+
+      } else {
+        alert("Invalid admin credentials");
+      }
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white shadow-lg rounded-xl p-8 w-[380px]">
-        <h1 className="text-2xl font-bold text-center mb-6">
-          Smart Onboarding Agent
-        </h1>
+    <div className="flex items-center justify-center h-screen bg-gray-100">
 
-        {/* Role Toggle */}
+      <div className="bg-white shadow-lg rounded-xl p-8 w-96">
+
+        <h2 className="text-2xl font-bold text-center mb-6">
+          Smart Onboarding Agent
+        </h2>
+
+        {/* Role Switch */}
         <div className="flex mb-4">
           <button
-            className={`flex-1 py-2 ${
-              role === "student"
-                ? "bg-blue-500 text-white"
-                : "bg-gray-200"
-            }`}
+            className={`w-1/2 p-2 ${role === "student" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
             onClick={() => setRole("student")}
           >
             Student
           </button>
 
           <button
-            className={`flex-1 py-2 ${
-              role === "admin"
-                ? "bg-blue-500 text-white"
-                : "bg-gray-200"
-            }`}
+            className={`w-1/2 p-2 ${role === "admin" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
             onClick={() => setRole("admin")}
           >
             Admin
           </button>
         </div>
 
-        {/* Name Input */}
-        <input
-          type="text"
-          placeholder="Enter Name"
-          className="w-full border p-2 rounded mb-3"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+        {/* STUDENT FORM */}
+        {role === "student" && (
+          <>
+            <input
+              type="text"
+              placeholder="Enter Name"
+              className="w-full p-2 border mb-3"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
 
-        {/* Admission ID */}
-        <input
-          type="text"
-          placeholder="Admission ID"
-          className="w-full border p-2 rounded mb-4"
-          value={admissionId}
-          onChange={(e) => setAdmissionId(e.target.value)}
-        />
+            <input
+              type="text"
+              placeholder="Admission ID"
+              className="w-full p-2 border mb-3"
+              value={admissionId}
+              onChange={(e) => setAdmissionId(e.target.value)}
+            />
+          </>
+        )}
 
-        {/* Login Button */}
+        {/* ADMIN FORM */}
+        {role === "admin" && (
+          <>
+            <input
+              type="text"
+              placeholder="Admin Username"
+              className="w-full p-2 border mb-3"
+              value={adminUser}
+              onChange={(e) => setAdminUser(e.target.value)}
+            />
+
+            <input
+              type="password"
+              placeholder="Password"
+              className="w-full p-2 border mb-3"
+              value={adminPass}
+              onChange={(e) => setAdminPass(e.target.value)}
+            />
+          </>
+        )}
+
         <button
           onClick={handleLogin}
-          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+          className="w-full bg-blue-500 text-white p-2 rounded"
         >
           Continue
         </button>
+
       </div>
     </div>
   );
